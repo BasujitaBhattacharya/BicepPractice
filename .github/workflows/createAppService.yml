@@ -1,0 +1,47 @@
+name: Create Azure Resources
+
+on:
+  workflow_dispatch:     
+
+jobs:
+  create-app-service:
+
+    env:
+      DEPLOYMENT_NAME: appservice-create
+      RESOURCE_GROUP_NAME: ${{ secrets.RESOURCE_GROUP_NAME }}
+      LOCATION: ${{ secrets.LOCATION }}
+      
+    runs-on: ubuntu-latest
+
+    steps:
+      
+      - uses: actions/checkout@v2
+
+      # The build step is to be sure no errors are present
+      # in the bicep template
+      - name: Validate that bicep builds
+        run: az bicep build -f main.bicep
+        working-directory: ./AppService
+
+      - name: Azure Login
+        uses: Azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+                    
+      - name: deploy
+        id: createResources
+        uses: azure/arm-deploy@v1
+        with:
+          subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION }}
+          scope: subscription
+          region: ${{ env.LOCATION }}
+          deploymentName:  ${{ env.DEPLOYMENT_NAME }}
+          template: ./AppService/main.bicep
+          parameters: location=${{ env.LOCATION }} rgName=${{ env.RESOURCE_GROUP_NAME }} fqdnStorage=${{ secrets.STORAGE_CUSTOM_DOMAIN }}
+      
+      - uses: gliech/create-github-secret-action@v1
+        name: Write AppService Name
+        with:
+          name: APP_SERVICE_NAME
+          value: ${{ steps.createResources.outputs.appServiceAppName }}
+          pa_token: ${{ secrets.PA_TOKEN }}
