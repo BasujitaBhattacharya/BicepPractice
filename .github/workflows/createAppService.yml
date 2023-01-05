@@ -1,4 +1,4 @@
-name: Create Azure Resources
+name: Create App Service
 
 on:
   workflow_dispatch:     
