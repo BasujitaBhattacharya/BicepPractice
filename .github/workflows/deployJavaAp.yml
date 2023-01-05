@@ -22,7 +22,7 @@ name: Build and deploy JAR app to Azure Web App
 env:
   JAVA_VERSION: '11'                 # set this to the Java version to use
   DISTRIBUTION: microsoft            # set this to the Java distribution
-  AZURE_WEBAPP_PACKAGE_PATH : ./AppService/JavaWebApp/
+  AZURE_WEBAPP_PACKAGE_PATH : ./AppService/JavaWebApp
 
 on:
   push:
