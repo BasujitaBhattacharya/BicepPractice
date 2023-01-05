@@ -1,7 +1,7 @@
 ﻿targetScope = 'subscription'
 
 @description('The location of the Azure resources')
-param location string = 'canadacentral'
+param location string
 
 @description('The name of the resource group')
 param rgName string
