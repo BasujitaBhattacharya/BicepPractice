@@ -55,7 +55,7 @@ jobs:
         with:
           name: java-app
           path: '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/target/*.war'
-
+      
   deploy:
     permissions:
       contents: none
@@ -70,7 +70,11 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: java-app
-
+          
+      - name: List directory
+        run: ls
+        working-directory: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/target/JavaWebAppValeyKey-0.0.1-SNAPSHOT/WEB-INF/classes
+        
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v2
